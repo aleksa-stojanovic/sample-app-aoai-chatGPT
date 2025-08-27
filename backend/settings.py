@@ -20,6 +20,7 @@ from typing import List, Literal, Optional
 from typing_extensions import Self
 from quart import Request
 from backend.utils import parse_multi_columns, generateFilterString
+from backend.prompt import get_system_message
 
 DOTENV_PATH = os.environ.get(
     "DOTENV_PATH",
@@ -118,7 +119,7 @@ class _AzureOpenAISettings(BaseSettings):
     logit_bias: Optional[dict] = None
     presence_penalty: Optional[confloat(ge=-2.0, le=2.0)] = 0.0
     frequency_penalty: Optional[confloat(ge=-2.0, le=2.0)] = 0.0
-    system_message: str = "You are an AI assistant that helps people find information."
+    system_message: str = Field(default_factory=get_system_message)
     preview_api_version: str = MINIMUM_SUPPORTED_AZURE_OPENAI_PREVIEW_API_VERSION
     embedding_endpoint: Optional[str] = None
     embedding_key: Optional[str] = None
@@ -213,10 +214,7 @@ class _SearchCommonSettings(BaseSettings):
     allow_partial_result: bool = False
     include_contexts: Optional[List[str]] = ["citations", "intent"]
     vectorization_dimensions: Optional[int] = None
-    role_information: str = Field(
-        default="You are an AI assistant that helps people find information.",
-        validation_alias="AZURE_OPENAI_SYSTEM_MESSAGE"
-    )
+    role_information: str = Field(default_factory=get_system_message)
 
     @field_validator('include_contexts', mode='before')
     @classmethod
