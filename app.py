@@ -242,6 +242,7 @@ async def init_cosmosdb_client():
 def prepare_model_args(request_body, request_headers):
     request_messages = request_body.get("messages", [])
     preferred_language = request_body.get("preferred_language", "python")
+    logging.warning("Full request body: %s", request_body)
     logging.warning("Preparing model args with preferred language: %s", preferred_language)
     messages = []
     

@@ -215,7 +215,8 @@ class _SearchCommonSettings(BaseSettings):
     allow_partial_result: bool = False
     include_contexts: Optional[List[str]] = ["citations", "intent"]
     vectorization_dimensions: Optional[int] = None
-    role_information: str = Field(default_factory=get_system_message)
+    # role_information is handled dynamically in prepare_model_args, not from env
+    # role_information: str = Field(default_factory=get_system_message)
 
     @field_validator('include_contexts', mode='before')
     @classmethod
