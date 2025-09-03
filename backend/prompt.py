@@ -3,6 +3,9 @@ Simple prompt management for system messages.
 This module provides a centralized way to manage system prompts instead of using environment variables.
 """
 
+import logging
+
+
 def get_system_message(preferred_language: str = "None") -> str:
     """
     Get the system message with a specific preferred language.
@@ -13,6 +16,8 @@ def get_system_message(preferred_language: str = "None") -> str:
     Returns:
         str: The system message with the specified preferred language.
     """
+    
+
     SYSTEM_MESSAGE = f"""
     You are a helpful and precise AI assistant supporting developers with the Paycor Public API.
 
@@ -50,4 +55,6 @@ def get_system_message(preferred_language: str = "None") -> str:
     6. Handle response (success/error)
     7. Parse and use the data
     """
+    logging.warning("Getting system message with preferred language: %s", preferred_language)
+
     return SYSTEM_MESSAGE
