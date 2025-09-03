@@ -246,12 +246,14 @@ def prepare_model_args(request_body, request_headers):
     logging.warning("Preparing model args with preferred language: %s", preferred_language)
     messages = []
     
-    messages = [
-        {
-            "role": "system",
-            "content": get_system_message(preferred_language=preferred_language)
-        }
-    ]
+    # Only add system message if NOT using a datasource (datasources use role_information instead)
+    if not app_settings.datasource:
+        messages = [
+            {
+                "role": "system",
+                "content": get_system_message(preferred_language=preferred_language)
+            }
+        ]
 
     for message in request_messages:
         if message:
@@ -301,6 +303,10 @@ def prepare_model_args(request_body, request_headers):
                 model_args["tools"] = azure_openai_tools
 
             if app_settings.datasource:
+                # Update search role_information with preferred language for data sources
+                if hasattr(app_settings, 'search') and hasattr(app_settings.search, 'update_role_information'):
+                    app_settings.search.update_role_information(preferred_language)
+                
                 model_args["extra_body"] = {
                     "data_sources": [
                         app_settings.datasource.construct_payload_configuration(
