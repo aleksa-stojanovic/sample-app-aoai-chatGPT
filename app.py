@@ -244,13 +244,13 @@ def prepare_model_args(request_body, request_headers):
     preferred_language = request_body.get("preferred_language", "python")
     logging.warning("Preparing model args with preferred language: %s", preferred_language)
     messages = []
-    if not app_settings.datasource:
-        messages = [
-            {
-                "role": "system",
-                "content": get_system_message(preferred_language=preferred_language)
-            }
-        ]
+    
+    messages = [
+        {
+            "role": "system",
+            "content": get_system_message(preferred_language=preferred_language)
+        }
+    ]
 
     for message in request_messages:
         if message:
