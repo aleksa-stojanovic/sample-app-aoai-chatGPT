@@ -3,7 +3,7 @@ Simple prompt management for system messages.
 This module provides a centralized way to manage system prompts instead of using environment variables.
 """
 
-def get_system_message(preferred_language: str = "python") -> str:
+def get_system_message(preferred_language: str = "None") -> str:
     """
     Get the system message with a specific preferred language.
     
