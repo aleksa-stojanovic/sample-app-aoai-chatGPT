@@ -6,7 +6,7 @@ This module provides a centralized way to manage system prompts instead of using
 import logging
 
 
-def get_system_message(preferred_language: str = "None") -> str:
+def get_system_message(preferred_language: str = "python") -> str:
     """
     Get the system message with a specific preferred language.
     
