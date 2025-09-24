@@ -121,12 +121,11 @@ def format_stream_response(chatCompletionChunk, history_metadata, apim_request_i
     if len(chatCompletionChunk.choices) > 0:
         delta = chatCompletionChunk.choices[0].delta
         if delta:
-            # Only emit a tool/context message if context has meaningful value (not None / empty)
-            if getattr(delta, "context", None):
+            if hasattr(delta, "context"):
                 messageObj = {"role": "tool", "content": json.dumps(delta.context)}
                 response_obj["choices"][0]["messages"].append(messageObj)
                 return response_obj
-            if delta.role == "assistant" and getattr(delta, "context", None):
+            if delta.role == "assistant" and hasattr(delta, "context"):
                 messageObj = {
                     "role": "assistant",
                     "context": delta.context,
