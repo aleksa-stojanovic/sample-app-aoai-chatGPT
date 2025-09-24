@@ -3,6 +3,7 @@ import json
 import logging
 import requests
 import dataclasses
+import re
 
 from typing import List
 
@@ -120,11 +121,12 @@ def format_stream_response(chatCompletionChunk, history_metadata, apim_request_i
     if len(chatCompletionChunk.choices) > 0:
         delta = chatCompletionChunk.choices[0].delta
         if delta:
-            if hasattr(delta, "context"):
+            # Only emit a tool/context message if context has meaningful value (not None / empty)
+            if getattr(delta, "context", None):
                 messageObj = {"role": "tool", "content": json.dumps(delta.context)}
                 response_obj["choices"][0]["messages"].append(messageObj)
                 return response_obj
-            if delta.role == "assistant" and hasattr(delta, "context"):
+            if delta.role == "assistant" and getattr(delta, "context", None):
                 messageObj = {
                     "role": "assistant",
                     "context": delta.context,
@@ -149,6 +151,10 @@ def format_stream_response(chatCompletionChunk, history_metadata, apim_request_i
                 return response_obj
             else:
                 if delta.content:
+                    # Drop entire chunk if it contains any citation marker like [doc123]
+                    pattern = re.compile(r"\[doc\d+\]")
+                    if pattern.search(delta.content):
+                        return {}
                     messageObj = {
                         "role": "assistant",
                         "content": delta.content,
